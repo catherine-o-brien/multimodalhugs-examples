@@ -1,5 +1,7 @@
 venvs
 tools
+.venv
+.idea
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
