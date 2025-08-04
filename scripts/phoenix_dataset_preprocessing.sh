@@ -2,8 +2,10 @@
 
 # calling script needs to set:
 # $base
+# $dry_run
 
 base=$1
+dry_run=$2
 
 scripts=$base/scripts
 data=$base/data
@@ -39,10 +41,16 @@ which python
 
 ################################
 
+if [[ $dry_run == "true" ]]; then
+    dry_run_arg="--dry-run"
+else
+    dry_run_arg=""
+fi
+
 python $scripts/phoenix_dataset_preprocessing.py \
     --pose-dir $poses \
     --output-dir $preprocessed \
-    --tfds-data-dir $data/tensorflow_datasets
+    --tfds-data-dir $data/tensorflow_datasets $dry_run_arg
 
 # sizes
 echo "Sizes of preprocessed TSV files:"
