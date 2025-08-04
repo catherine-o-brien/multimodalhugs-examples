@@ -1,5 +1,7 @@
 venvs
 tools
+data
+logs
 .venv
 .idea
 # Byte-compiled / optimized / DLL files

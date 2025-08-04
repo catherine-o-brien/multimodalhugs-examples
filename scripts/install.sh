@@ -23,4 +23,4 @@ git clone https://github.com/GerrySant/multimodalhugs.git $tools/multimodalhugs
 
 # install SL datasets
 
-pip install sign-language-datasets
+pip install git+https://github.com/sign-language-processing/datasets.git

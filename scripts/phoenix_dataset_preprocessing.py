@@ -5,6 +5,7 @@ import argparse
 import importlib
 import logging
 import csv
+import itertools
 
 import tensorflow as tf
 import tensorflow_datasets as tfds
@@ -28,6 +29,8 @@ def parse_arguments():
 
     parser.add_argument("--tfds-data-dir", type=str, default=None,
                         help="TFDS data folder to cache downloads.", required=False)
+    parser.add_argument("--dry-run", action="store_true", default=False,
+                        help="Process very few elements only.", required=False)
     return parser.parse_args()
 
 
@@ -73,16 +76,23 @@ Example = Dict[str, str]
 def generate_examples(dataset: tf.data.Dataset,
                       split_name: str,
                       pose_header: PoseHeader,
-                      pose_dir: str) -> Iterator[Example]:
+                      pose_dir: str,
+                      dry_run: bool = False) -> Iterator[Example]:
     """
     :param dataset:
     :param split_name: "train", "validation" or "test"
     :param pose_header:
     :param pose_dir:
+    :param dry_run:
     :return:
     """
 
-    for datum in dataset[split_name]:
+    if dry_run:
+        data_iterator = itertools.islice(dataset[split_name], 0, 10)
+    else:
+        data_iterator = dataset[split_name]
+
+    for datum in data_iterator:
 
         datum_id = datum["id"].numpy().decode('utf-8')
 
@@ -170,7 +180,8 @@ def main():
         examples = list(generate_examples(dataset=phoenix_with_poses,
                                           split_name=split_name,
                                           pose_header=pose_header,
-                                          pose_dir=args.pose_dir))
+                                          pose_dir=args.pose_dir,
+                                          dry_run=args.dry_run))
 
         stats[split_name] = len(examples)
 

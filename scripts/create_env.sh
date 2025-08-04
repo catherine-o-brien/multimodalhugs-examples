@@ -14,4 +14,4 @@ mkdir -p $venvs
 
 # venv for HF
 
-conda create -y --prefix $venvs/huggingface python=3.9.6
+conda create -y --prefix $venvs/huggingface python=3.11.13
