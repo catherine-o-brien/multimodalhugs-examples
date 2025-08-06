@@ -112,7 +112,10 @@ def generate_examples(dataset: tf.data.Dataset,
 
         pose_filepath = os.path.join(pose_dir, f"{datum_id}.pose")
 
-        with open("pose_filepath", "wb") as data_buffer:
+        if dry_run:
+            logging.debug(f"Writing pose to: '{pose_filepath}'")
+
+        with open(pose_filepath, "wb") as data_buffer:
             pose.write(data_buffer)
 
         example = {

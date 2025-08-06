@@ -2,7 +2,7 @@
 
 base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
 
-dry_run="true"
+dry_run="false"
 
 ################################
 
@@ -42,7 +42,7 @@ id_preprocess=$(
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
     $scripts/phoenix_dataset_preprocessing.sh \
-    $base
+    $base $dry_run
 )
 
 echo "  id_preprocess: $id_preprocess | $logs/slurm-$id_preprocess.out" | tee -a $logs/MAIN
@@ -61,7 +61,7 @@ id_train=$(
     --dependency=afterok:$id_preprocess \
     $SLURM_LOG_ARGS \
     $scripts/train_phoenix.sh \
-    $base $dry_run
+    $base
 )
 
 echo "  id_train: $id_train | $logs/slurm-$id_train.out"  | tee -a $logs/MAIN

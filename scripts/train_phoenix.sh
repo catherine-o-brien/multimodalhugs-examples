@@ -7,15 +7,12 @@
 base=$1
 dry_run=$2
 
-scripts=$base/scripts
-data=$base/data
 venvs=$base/venvs
+configs=$base/configs
 
-poses=$data/poses
-preprocessed=$data/preprocessed
+models=$base/models
 
-mkdir -p $data
-mkdir -p $poses $preprocessed
+mkdir -p $models
 
 # measure time
 
@@ -39,23 +36,23 @@ source activate $venvs/huggingface
 echo "Python after activating:"
 which python
 
+# necessary?
+# export CUDA_VISIBLE_DEVICES=0
+
 ################################
 
-if [[ $dry_run == "true" ]]; then
-    dry_run_arg="--dry-run"
-else
-    dry_run_arg=""
-fi
+# setup
 
-python $scripts/phoenix_dataset_preprocessing.py \
-    --pose-dir $poses \
-    --output-dir $preprocessed \
-    --tfds-data-dir $data/tensorflow_datasets $dry_run_arg
+multimodalhugs-setup --modality "pose2text" --config_path $CONFIG_PATH
 
-# sizes
-echo "Sizes of preprocessed TSV files:"
+# training
 
-wc -l $preprocessed/*
+config_path=$configs/config_phoenix.yaml
+
+multimodalhugs-train \
+    --task "translation" \
+    --config_path $config_path \
+    --output_dir $models
 
 echo "time taken:"
 echo "$SECONDS seconds"
