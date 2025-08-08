@@ -7,12 +7,20 @@
 base=$1
 dry_run=$2
 
+data=$base/data
+preprocessed=$data/preprocessed
+scripts=$base/scripts
 venvs=$base/venvs
 configs=$base/configs
+configs_sub=$configs/phoenix
 
 models=$base/models
+models_sub=$models/phoenix
 
+mkdir -p $configs
+mkdir -p $configs_sub
 mkdir -p $models
+mkdir -p $models_sub
 
 # measure time
 
@@ -43,16 +51,30 @@ which python
 
 # setup
 
-multimodalhugs-setup --modality "pose2text" --config_path $CONFIG_PATH
+if [[ $dry_run == "true" ]]; then
+    dry_run_arg="--dry-run"
+else
+    dry_run_arg=""
+fi
+
+python $scripts/create_config.py \
+    --run-name "phoenix" \
+    --output $configs_sub/config_phoenix.yaml \
+    --logging-dir $models_sub \
+    --train-metadata-file $preprocessed/rwth_phoenix2014_t.train.tsv \
+    --validation-metadata-file $preprocessed/rwth_phoenix2014_t.validation.tsv \
+    --test-metadata-file $preprocessed/rwth_phoenix2014_t.test.tsv \
+    --new-vocabulary "__dgs__" \
+    --reduce-holistic-poses $dry_run_arg
+
+multimodalhugs-setup --modality "pose2text" --config_path $configs_sub/config_phoenix.yaml
 
 # training
 
-config_path=$configs/config_phoenix.yaml
-
 multimodalhugs-train \
     --task "translation" \
-    --config_path $config_path \
-    --output_dir $models
+    --config_path $configs_sub/config_phoenix.yaml \
+    --output_dir $models_sub
 
 echo "time taken:"
 echo "$SECONDS seconds"
