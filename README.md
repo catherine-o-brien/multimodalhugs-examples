@@ -16,6 +16,9 @@ Then install required software:
 
 ## Run experiments
 
+The one change you definitely need to make is edit the 
+variable `base` at the top of `scripts/run.sh.` Then:
+
     ./scripts/run.sh
 
 This will first download and prepare the training data,
