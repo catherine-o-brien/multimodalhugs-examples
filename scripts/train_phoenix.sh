@@ -47,6 +47,10 @@ which python
 # necessary?
 # export CUDA_VISIBLE_DEVICES=0
 
+# if in doubt, check with:
+# echo "CUDA is available:"
+# python -c 'import torch; print(torch.cuda.is_available())'
+
 ################################
 
 # setup
@@ -59,7 +63,8 @@ fi
 
 python $scripts/create_config.py \
     --run-name "phoenix" \
-    --output $configs_sub/config_phoenix.yaml \
+    --config-dir $configs_sub \
+    --output-dir $models_sub \
     --logging-dir $models_sub \
     --train-metadata-file $preprocessed/rwth_phoenix2014_t.train.tsv \
     --validation-metadata-file $preprocessed/rwth_phoenix2014_t.validation.tsv \
@@ -67,7 +72,12 @@ python $scripts/create_config.py \
     --new-vocabulary "__dgs__" \
     --reduce-holistic-poses $dry_run_arg
 
-multimodalhugs-setup --modality "pose2text" --config_path $configs_sub/config_phoenix.yaml
+multimodalhugs-setup \
+    --modality "pose2text" \
+    --config_path $configs_sub/config_phoenix.yaml \
+    --output_dir $models_sub
+
+exit 0
 
 # training
 

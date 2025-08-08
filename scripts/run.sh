@@ -2,7 +2,7 @@
 
 base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
 
-dry_run="false"
+dry_run="true"
 
 ################################
 
@@ -47,8 +47,6 @@ id_preprocess=$(
 
 echo "  id_preprocess: $id_preprocess | $logs/slurm-$id_preprocess.out" | tee -a $logs/MAIN
 
-exit 0
-
 # load GPU modules at this point
 
 module load gpu cuda/12.6.2 cudnn/9.5.1.17-12
@@ -56,12 +54,12 @@ module load gpu cuda/12.6.2 cudnn/9.5.1.17-12
 # HF train (depends on preprocess)
 
 id_train=$(
-    $scripts/running/sbatch_bare.sh \
+    $scripts/sbatch_bare.sh \
     $SLURM_ARGS_TRAIN \
     --dependency=afterok:$id_preprocess \
     $SLURM_LOG_ARGS \
     $scripts/train_phoenix.sh \
-    $base
+    $base $dry_run
 )
 
 echo "  id_train: $id_train | $logs/slurm-$id_train.out"  | tee -a $logs/MAIN

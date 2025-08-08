@@ -1,5 +1,9 @@
 # multimodalhugs-examples
 
+Download the code:
+
+    git clone https://github.com/bricksdont/multimodalhugs-examples
+
 ## Basic setup
 
 Create a venv:

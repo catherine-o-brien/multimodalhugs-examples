@@ -19,6 +19,7 @@ model:
   feat_dim: 534                                           # Dimention of the Feature Extractor output. If features are extracted off-line, the dimentionality of features.
 
 training:
+  output_dir: {output_dir}
   run_name: {run_name}           # The name or identifier of the model configuration.
   logging_dir: {logging_dir}              # Directory to store training logs.
   do_train: True                                   # Whether to run training.
@@ -81,12 +82,16 @@ def fill_template(args: argparse.Namespace) -> str:
         max_steps = 500000
 
     if args.new_vocabulary is not None:
-        new_vocabulary_path = f"{args.output}/new_vocabulary.txt"
+        new_vocabulary_path = f"{args.config_dir}/new_vocabulary.txt"
+
+        logging.debug(f"Writing new vocabulary to: '{new_vocabulary_path}'")
+
         with open(new_vocabulary_path, "w") as outhandle:
             outhandle.write("\n".join(args.new_vocabulary))
         args.new_vocabulary = new_vocabulary_path
 
     return YAML_CONFIG_TEMPLATE.format(
+        output_dir=args.output_dir,
         run_name=args.run_name,
         logging_dir=args.logging_dir,
         train_metadata_file=args.train_metadata_file,
@@ -104,8 +109,10 @@ def fill_template(args: argparse.Namespace) -> str:
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Create YAML config file.")
     parser.add_argument("--run-name", type=str, help="The name or identifier of the model configuration.")
-    parser.add_argument("--output", type=str, help="Path where the output config (and possibly new vocabulary file) "
-                                                   "should be saved.")
+    parser.add_argument("--config-dir", type=str,
+                        help="Path where the output config (and possibly new vocabulary file) "
+                             "should be saved.")
+    parser.add_argument("--output-dir", type=str, help="Directory where the model will be saved")
     parser.add_argument("--logging-dir", type=str, help="Directory to store training logs.")
 
     parser.add_argument("--train-metadata-file", type=str, help="Train TSV metadata file path.")
@@ -113,7 +120,7 @@ def parse_arguments():
     parser.add_argument("--test-metadata-file", type=str, help="Test TSV metadata file path.")
 
     parser.add_argument("--text-tokenizer-path", type=str, help="Text tokenizer identifier (default: facebook/m2m100_418M).",
-                        default = "facebook/m2m100_418M", required = False)
+                        default="facebook/m2m100_418M", required = False)
     parser.add_argument("--new-vocabulary", type=str, nargs="+", help="Strings to be added to tokenizer (default: None).",
                         default=None, required=False)
 
@@ -127,7 +134,7 @@ def parse_arguments():
                         help="Reduce holistic poses (default: False).", required=False)
 
     parser.add_argument("--dry-run", action="store_true", default=False,
-                        help="Process very few elements only.", required=False)
+                        help="Train for a small number of steps.", required=False)
     return parser.parse_args()
 
 
@@ -140,7 +147,11 @@ def main():
 
     filled_template = fill_template(args)
 
-    with open(args.output, "w") as outhandle:
+    config_path = f"{args.config_dir}/config_{args.run_name}.yaml"
+
+    logging.debug(f"Writing config to: '{config_path}'")
+
+    with open(config_path, "w") as outhandle:
         outhandle.write(filled_template)
 
 

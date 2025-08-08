@@ -17,6 +17,16 @@ preprocessed=$data/preprocessed
 mkdir -p $data
 mkdir -p $poses $preprocessed
 
+# maybe skip
+
+if [[ -s $preprocessed/rwth_phoenix2014_t.train.tsv ]]; then
+    echo "Preprocessed file exists: $preprocessed/rwth_phoenix2014_t.train.tsv"
+    echo "Skipping"
+    exit 0
+else
+    echo "Preprocessed files do not exist yet"
+fi
+
 # measure time
 
 SECONDS=0

@@ -24,3 +24,7 @@ git clone https://github.com/GerrySant/multimodalhugs.git $tools/multimodalhugs
 # install SL datasets
 
 pip install git+https://github.com/sign-language-processing/datasets.git
+
+# TF keras, because keras 3 is not supported in Transformers
+
+pip install tf-keras
