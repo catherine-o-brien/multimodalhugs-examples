@@ -124,8 +124,8 @@ def parse_arguments():
     parser.add_argument("--new-vocabulary", type=str, nargs="+", help="Strings to be added to tokenizer (default: None).",
                         default=None, required=False)
 
-    parser.add_argument("--backbone-type", type=str, help="Identifier for the pretrained backbone (default: m2m100).",
-                        default="m2m100", required=False)
+    parser.add_argument("--backbone-type", type=str, help="Identifier for the pretrained backbone (default: m2m_100).",
+                        default="m2m_100", required=False)
     parser.add_argument("--pretrained-backbone", type=str, help="Weights or checkpoint identifier for the pretrained "
                                                                 "backbone. (default: facebook/m2m100_418M).",
                         default="facebook/m2m100_418M", required=False)

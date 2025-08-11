@@ -57,8 +57,10 @@ which python
 
 if [[ $dry_run == "true" ]]; then
     dry_run_arg="--dry-run"
+    use_cpu_arg="--use_cpu"
 else
     dry_run_arg=""
+    use_cpu_arg=""
 fi
 
 python $scripts/create_config.py \
@@ -72,19 +74,25 @@ python $scripts/create_config.py \
     --new-vocabulary "__dgs__" \
     --reduce-holistic-poses $dry_run_arg
 
+# https://github.com/GerrySant/multimodalhugs/issues/50
+
+export HF_HUB_DISABLE_XET=1
+
+# avoid writing to ~/.cache/huggingface
+
+export HF_HOME=$data/huggingface
+
 multimodalhugs-setup \
     --modality "pose2text" \
     --config_path $configs_sub/config_phoenix.yaml \
     --output_dir $models_sub
-
-exit 0
 
 # training
 
 multimodalhugs-train \
     --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
-    --output_dir $models_sub
+    --output_dir $models_sub $use_cpu_arg
 
 echo "time taken:"
 echo "$SECONDS seconds"
