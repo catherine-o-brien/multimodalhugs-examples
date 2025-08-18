@@ -2,7 +2,7 @@
 
 base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
 
-dry_run="true"
+dry_run="false"
 
 ################################
 
@@ -72,3 +72,15 @@ id_train=$(
 
 echo "  id_train: $id_train | $logs/slurm-$id_train.out"  | tee -a $logs/MAIN
 
+# HF translate + evaluate (depends on train)
+
+id_translate=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_TRANSLATE \
+    --dependency=afterok:$id_train \
+    $SLURM_LOG_ARGS \
+    $scripts/translate_phoenix.sh \
+    $base $dry_run
+)
+
+echo "  id_translate: $id_translate | $logs/slurm-$id_translate.out"  | tee -a $logs/MAIN

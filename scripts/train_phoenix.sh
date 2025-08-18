@@ -22,6 +22,18 @@ mkdir -p $configs_sub
 mkdir -p $models
 mkdir -p $models_sub
 
+# skip if checkpoint exists
+
+shopt -s nullglob
+checkpoints=("$model_sub"/checkpoint*/)
+
+if [ ${#checkpoints[@]} -gt 0 ]; then
+    echo "Checkpoint folder exists, skipping"
+    exit 0
+else
+    echo "No checkpoint folder, will start training"
+fi
+
 # measure time
 
 SECONDS=0
@@ -74,6 +86,10 @@ python $scripts/create_config.py \
     --new-vocabulary "__dgs__" \
     --reduce-holistic-poses $dry_run_arg
 
+# save config before MMH modifies it
+
+cp $configs_sub/config_phoenix.yaml $configs_sub/config_phoenix_original.yaml
+
 # https://github.com/GerrySant/multimodalhugs/issues/50
 
 export HF_HUB_DISABLE_XET=1
@@ -92,7 +108,9 @@ multimodalhugs-setup \
 multimodalhugs-train \
     --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
-    --output_dir $models_sub $use_cpu_arg
+    --output_dir $models_sub \
+    --overwrite_output_dir \
+    --report_to none $use_cpu_arg
 
 echo "time taken:"
 echo "$SECONDS seconds"

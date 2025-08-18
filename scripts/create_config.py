@@ -37,8 +37,8 @@ training:
   load_best_model_at_end: True                     # Load the best model found during training at the end.
   dataloader_num_workers: 4                        # Number of subprocesses to use for data loading; higher values speed up data loading but increase memory usage.
   dataloader_prefetch_factor: 2                    # Number of batches loaded in advance by each worker; total prefetched batches = num_workers * prefetch_factor.
-  metric_name: bleu                                # Name of the metric to use (any metric supported by evaluate.load()). If you want to use multiple metrics, structure the variable like: metric_name: '<metric_name_1>,<metric_name_2>,...'
-  metric_for_best_model: 'bleu'                    # Metric used to determine the best model.
+  metric_name: sacrebleu, chrf                                # Name of the metric to use (any metric supported by evaluate.load()). If you want to use multiple metrics, structure the variable like: metric_name: '<metric_name_1>,<metric_name_2>,...'
+  metric_for_best_model: 'sacrebleu'                    # Metric used to determine the best model.
   weight_decay: 0                                  # Weight decay factor (L2 regularization).
   adam_beta1: 0.9                                  # Beta1 parameter for the Adam optimizer.
   adam_beta2: 0.998                                # Beta2 parameter for the Adam optimizer.
