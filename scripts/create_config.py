@@ -22,6 +22,7 @@ training:
   output_dir: {output_dir}
   run_name: {run_name}           # The name or identifier of the model configuration.
   logging_dir: {logging_dir}              # Directory to store training logs.
+  early_stopping_patience: 10
   do_train: True                                   # Whether to run training.
   do_eval: True                                    # Whether to run evaluation on the validation set.
   predict_with_generate: true                      # Use generate to compute generative metrics.

@@ -25,7 +25,7 @@ mkdir -p $models_sub
 # skip if checkpoint exists
 
 shopt -s nullglob
-checkpoints=("$model_sub"/checkpoint*/)
+checkpoints=("$models_sub"/checkpoint*/)
 
 if [ ${#checkpoints[@]} -gt 0 ]; then
     echo "Checkpoint folder exists, skipping"
