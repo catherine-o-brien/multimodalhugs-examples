@@ -2,7 +2,7 @@
 
 base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
 
-dry_run="true"
+dry_run="false"
 
 ################################
 

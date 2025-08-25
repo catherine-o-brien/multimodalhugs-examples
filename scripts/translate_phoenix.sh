@@ -54,16 +54,18 @@ which python
 ################################
 
 # for now need to manually find latest checkpoint
-# taken from: https://github.com/GerrySant/multimodalhugs/blob/master/tests/e2e_overfitting/e2e_overfitting.sh#L26C1-L28C50
 
-model_name_or_path=$(find $models_sub/phoenix -maxdepth 1 -type d -name 'checkpoint-*' | \
-  sed 's/.*checkpoint-//' | sort -n | tail -1 | \
-  xargs -I{} echo "${models_sub/phoenix}/checkpoint-{}")
+model_name_or_path=$(ls -d "$models_sub"/checkpoint-* 2>/dev/null | sort -V | tail -1 || true)
+
+if [ -z "$model_name_or_path" ]; then
+  echo "No checkpoints found in $models_sub"
+  exit 1
+fi
 
 multimodalhugs-generate --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
     --metric_name "sacrebleu" \
     --output_dir $translations_sub \
-    --data_dir $models_sub/phoenix/datasets/pose2text \
+    --dataset_dir $models_sub/datasets/pose2text \
     --model_name_or_path $model_name_or_path \
-    --processor_name_or_path $models_sub/phoenix/pose2text_processor
+    --processor_name_or_path $models_sub/pose2text_processor
