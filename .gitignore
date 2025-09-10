@@ -4,6 +4,8 @@ data
 models
 logs
 configs
+setup
+translations
 .venv
 .idea
 # Byte-compiled / optimized / DLL files

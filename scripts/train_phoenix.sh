@@ -25,7 +25,7 @@ mkdir -p $models_sub
 # skip if checkpoint exists
 
 shopt -s nullglob
-checkpoints=("$models_sub"/checkpoint*/)
+checkpoints=("$models_sub"/train/checkpoint*/)
 
 if [ ${#checkpoints[@]} -gt 0 ]; then
     echo "Checkpoint folder exists, skipping"
@@ -78,17 +78,11 @@ fi
 python $scripts/create_config.py \
     --run-name "phoenix" \
     --config-dir $configs_sub \
-    --output-dir $models_sub \
-    --logging-dir $models_sub \
     --train-metadata-file $preprocessed/rwth_phoenix2014_t.train.tsv \
     --validation-metadata-file $preprocessed/rwth_phoenix2014_t.validation.tsv \
     --test-metadata-file $preprocessed/rwth_phoenix2014_t.test.tsv \
     --new-vocabulary "__dgs__" \
     --reduce-holistic-poses $dry_run_arg
-
-# save config before MMH modifies it
-
-cp $configs_sub/config_phoenix.yaml $configs_sub/config_phoenix_original.yaml
 
 # https://github.com/GerrySant/multimodalhugs/issues/50
 
@@ -108,8 +102,8 @@ multimodalhugs-setup \
 multimodalhugs-train \
     --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
+    --setup_path $models_sub/setup \
     --output_dir $models_sub \
-    --overwrite_output_dir \
     --report_to none $use_cpu_arg
 
 echo "time taken:"

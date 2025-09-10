@@ -11,23 +11,21 @@ YAML_CONFIG_TEMPLATE = """# Configuration file for training with the multimodalh
 model:
   # Model-specific settings:
   type: "multimodal_embedder"
-  multimodal_mapper_type: "linear"                                # Type of Multimodal Mapper (e.g., "linear" or "adapter").
-  multimodal_mapper_layer_norm_before: true                       # Whether to apply Layer Normalization before the Multimodal Mapper.
-  multimodal_mapper_dropout: 0.1                                  # Dropout probability for the Multimodal Mapper to prevent overfitting.
-  backbone_type: {backbone_type}            # Identifier for the pretrained backbone (e.g., "m2m100").
-  pretrained_backbone: {pretrained_backbone}    # Weights or checkpoint identifier for the pretrained backbone.
-  feat_dim: 534                                           # Dimention of the Feature Extractor output. If features are extracted off-line, the dimentionality of features.
+  multimodal_mapper_type: "linear"                # Type of Multimodal Mapper (e.g., "linear" or "adapter").
+  multimodal_mapper_layer_norm_before: true       # Whether to apply Layer Normalization before the Multimodal Mapper.
+  multimodal_mapper_dropout: 0.1                  # Dropout probability for the Multimodal Mapper to prevent overfitting.
+  backbone_type: {backbone_type}                  # Identifier for the pretrained backbone (e.g., "m2m100").
+  pretrained_backbone: {pretrained_backbone}      # Weights or checkpoint identifier for the pretrained backbone.
+  feat_dim: 534                                   # Dimention of the Feature Extractor output. If features are extracted off-line, the dimentionality of features.
 
 training:
-  output_dir: {output_dir}
-  run_name: {run_name}           # The name or identifier of the model configuration.
-  logging_dir: {logging_dir}              # Directory to store training logs.
-  early_stopping_patience: 10
+  run_name: {run_name}                             # The name or identifier of the model configuration.
+  early_stopping_patience: 10                      # Stop after there was no improvement after this many validation steps.
   do_train: True                                   # Whether to run training.
   do_eval: True                                    # Whether to run evaluation on the validation set.
   predict_with_generate: true                      # Use generate to compute generative metrics.
   save_strategy: "steps"                           # Checkpoint save strategy during training.
-  eval_strategy: "steps"                     # Evaluation strategy ("steps" or "epoch").
+  eval_strategy: "steps"                           # Evaluation strategy ("steps" or "epoch").
   eval_steps: 128                                  # Number of training steps between evaluations.
   logging_steps: 128                               # Interval (in steps) at which training metrics are logged.
   save_steps: 128                                  # Interval (in steps) at which model checkpoints are saved.
@@ -38,14 +36,14 @@ training:
   load_best_model_at_end: True                     # Load the best model found during training at the end.
   dataloader_num_workers: 4                        # Number of subprocesses to use for data loading; higher values speed up data loading but increase memory usage.
   dataloader_prefetch_factor: 2                    # Number of batches loaded in advance by each worker; total prefetched batches = num_workers * prefetch_factor.
-  metric_name: sacrebleu, chrf                                # Name of the metric to use (any metric supported by evaluate.load()). If you want to use multiple metrics, structure the variable like: metric_name: '<metric_name_1>,<metric_name_2>,...'
-  metric_for_best_model: 'sacrebleu'                    # Metric used to determine the best model.
+  metric_name: sacrebleu, chrf                     # Name of the metric to use (any metric supported by evaluate.load()). If you want to use multiple metrics, structure the variable like: metric_name: '<metric_name_1>,<metric_name_2>,...'
+  metric_for_best_model: 'sacrebleu'               # Metric used to determine the best model.
   weight_decay: 0                                  # Weight decay factor (L2 regularization).
   adam_beta1: 0.9                                  # Beta1 parameter for the Adam optimizer.
   adam_beta2: 0.998                                # Beta2 parameter for the Adam optimizer.
   max_grad_norm: 0.0                               # Maximum gradient norm for clipping (0 means no clipping).
   num_train_epochs: 1                              # Number of full passes through the training dataset.
-  max_steps: {max_steps}                                # Maximum number of training steps, e.g. 500000 (overrides num_train_epochs if set).
+  max_steps: {max_steps}                           # Maximum number of training steps, e.g. 500000 (overrides num_train_epochs if set).
   lr_scheduler_type: "inverse_sqrt"                # Type of learning rate scheduler.
   warmup_steps: 8000                               # Number of warmup steps to gradually increase the learning rate.
   save_total_limit: 10                             # Maximum number of checkpoints to retain (older ones are deleted).
@@ -56,20 +54,18 @@ training:
 
 data:
   # Dataset and preprocessing settings:
-  train_metadata_file: {train_metadata_file}                                                                       # Path to the training metadata file (e.g., TSV format).
-  validation_metadata_file: {validation_metadata_file}                                                             # Path to the validation metadata file.
-  test_metadata_file: {test_metadata_file}                                                                         # Path to the test metadata file.
-  shuffle: True                                                                                                                 # Shuffle the dataset samples during loading.                                                                                # Path or identifier for the pretrained text tokenizer (e.g., "facebook/m2m100_418M").
+  train_metadata_file: {train_metadata_file}                            # Path to the training metadata file (e.g., TSV format).
+  validation_metadata_file: {validation_metadata_file}                  # Path to the validation metadata file.
+  test_metadata_file: {test_metadata_file}                              # Path to the test metadata file.
+  shuffle: True                                                                                                                 # Shuffle the dataset samples during loading.
   max_frames: 300                                                                                                               # Maximum number of frames to consider in video samples; samples exceeding this are filtered.
 
-processor:                                             # Image preprocessing settings.
-  reduce_holistic_poses: {reduce_holistic_poses}
-  text_tokenizer_path: {text_tokenizer_path}
-  new_vocabulary: {new_vocabulary}
+processor:
+  reduce_holistic_poses: {reduce_holistic_poses}   # reduce the face mesh points of Mediapipe holistic poses (leading to fewer dimensions overall)
+  text_tokenizer_path: {text_tokenizer_path}       # Path or identifier for the pretrained text tokenizer (e.g., "facebook/m2m100_418M").
+  new_vocabulary: {new_vocabulary}                 # Comma-separated list of new tokens that will be added to the tokenizer. It can also be a Path to the file containing the new tokens that will be added to the tokenizer.
 """
 
-
-# reminder: max_steps, dry_run
 
 def fill_template(args: argparse.Namespace) -> str:
     """
@@ -92,9 +88,7 @@ def fill_template(args: argparse.Namespace) -> str:
         args.new_vocabulary = new_vocabulary_path
 
     return YAML_CONFIG_TEMPLATE.format(
-        output_dir=args.output_dir,
         run_name=args.run_name,
-        logging_dir=args.logging_dir,
         train_metadata_file=args.train_metadata_file,
         validation_metadata_file=args.validation_metadata_file,
         test_metadata_file=args.test_metadata_file,
@@ -113,9 +107,6 @@ def parse_arguments():
     parser.add_argument("--config-dir", type=str,
                         help="Path where the output config (and possibly new vocabulary file) "
                              "should be saved.")
-    parser.add_argument("--output-dir", type=str, help="Directory where the model will be saved")
-    parser.add_argument("--logging-dir", type=str, help="Directory to store training logs.")
-
     parser.add_argument("--train-metadata-file", type=str, help="Train TSV metadata file path.")
     parser.add_argument("--validation-metadata-file", type=str, help="Validation TSV metadata file path.")
     parser.add_argument("--test-metadata-file", type=str, help="Test TSV metadata file path.")

@@ -28,3 +28,7 @@ pip install git+https://github.com/sign-language-processing/datasets.git
 # TF keras, because keras 3 is not supported in Transformers
 
 pip install tf-keras
+
+# bleurt not supported out of the box with evaluate
+
+pip install git+https://github.com/google-research/bleurt.git
