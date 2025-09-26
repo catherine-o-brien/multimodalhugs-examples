@@ -84,3 +84,18 @@ id_translate=$(
 )
 
 echo "  id_translate: $id_translate | $logs/slurm-$id_translate.out"  | tee -a $logs/MAIN
+
+exit 0
+
+# evaluate (depends on translate)
+
+id_evaluate=$(
+    $scripts/sbatch_bare.sh \
+    $SLURM_ARGS_GENERIC \
+    --dependency=afterok:$id_translate \
+    $SLURM_LOG_ARGS \
+    $scripts/evaluate.sh \
+    $base
+)
+
+echo "  id_evaluate: $id_evaluate | $logs/slurm-$id_evaluate.out"  | tee -a $logs/MAIN
