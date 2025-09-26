@@ -43,10 +43,6 @@ output=$evaluations_sub/test_score.bleu
 
 . $scripts/evaluate_bleu_generic.sh
 
-exit 0
-
-# todo remove once implemented
-
 output=$evaluations_sub/test_score.bleurt
 
 . $scripts/evaluate_bleurt_generic.sh

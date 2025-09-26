@@ -2,16 +2,10 @@
 
 # calling script needs to set
 
+# $scripts
 # $hyp
 # $ref
 # $output
-# $tokenize
-
-if [[ $tokenize == "true" ]]; then
-    tokenize_arg=""
-else
-    tokenize_arg="--tokenize none"
-fi
 
 for unused in pseudo_loop; do
 
@@ -19,7 +13,7 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    cat $hyp | sacrebleu $ref -w 3 $tokenize_arg > $output
+    python  evaluate_bleurt_generic.py --references $ref --predictions $hyp > $output
 
     echo "$output"
     cat $output
