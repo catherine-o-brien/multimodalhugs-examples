@@ -5,6 +5,7 @@ models
 logs
 configs
 setup
+evaluations
 translations
 .venv
 .idea

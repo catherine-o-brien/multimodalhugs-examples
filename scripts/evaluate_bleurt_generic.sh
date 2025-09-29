@@ -6,6 +6,7 @@
 # $hyp
 # $ref
 # $output
+# $bleurt_checkpoint
 
 for unused in pseudo_loop; do
 
@@ -13,7 +14,15 @@ for unused in pseudo_loop; do
       continue
     fi
 
-    python  evaluate_bleurt_generic.py --references $ref --predictions $hyp > $output
+    # avoid TF JIT compiler error
+
+    export XLA_FLAGS=--xla_gpu_cuda_data_dir=$(dirname $(dirname $(which nvcc)))
+
+    python $scripts/evaluate_bleurt.py \
+        --references $ref \
+        --predictions $hyp \
+        --checkpoint $bleurt_checkpoint \
+        > $output
 
     echo "$output"
     cat $output

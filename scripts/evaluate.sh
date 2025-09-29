@@ -2,9 +2,12 @@
 
 # calling process needs to set:
 # base
+# $dry_run
 
 base=$1
+dry_run=$2
 
+data=$base/data
 scripts=$base/scripts
 venvs=$base/venvs
 
@@ -36,14 +39,28 @@ which python
 
 ################################
 
+# avoid downloading metric files (e.g. BLEURT model) to ~/.cache/huggingface
+
+export HF_HOME=$data/huggingface
+
+# extract refs
+
+sed -n 's/^L \[[0-9]\+\]\s*//p' $translations_sub/predictions_labels.txt > $translations_sub/labels.txt
+
 hyp=$translations_sub/generated_predictions.txt
-ref=$translations_sub/predictions_labels.txt
+ref=$translations_sub/labels.txt
 
 output=$evaluations_sub/test_score.bleu
 
 . $scripts/evaluate_bleu_generic.sh
 
 output=$evaluations_sub/test_score.bleurt
+
+if [[ $dry_run == "true" ]]; then
+    bleurt_checkpoint="BLEURT-tiny"
+else
+    bleurt_checkpoint="BLEURT-20"
+fi
 
 . $scripts/evaluate_bleurt_generic.sh
 

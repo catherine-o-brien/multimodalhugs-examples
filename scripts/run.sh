@@ -34,6 +34,7 @@ DRY_RUN_SLURM_ARGS="--cpus-per-task=2 --time=01:00:00 --mem=8G"
 SLURM_ARGS_GENERIC="--cpus-per-task=8 --time=24:00:00 --mem=16G"
 SLURM_ARGS_TRAIN="--time=36:00:00 --gres=gpu:V100:1 --constraint=GPUMEM32GB --cpus-per-task 8 --mem 16g"
 SLURM_ARGS_TRANSLATE="--time=12:00:00 --gres=gpu:V100:1 --constraint=GPUMEM32GB --cpus-per-task 8 --mem 16g"
+SLURM_ARGS_EVALUATE="--time=01:00:00 --gres=gpu:V100:1 --constraint=GPUMEM32GB --cpus-per-task 8 --mem 16g"
 
 # if dry run, then all args use generic instances
 
@@ -41,6 +42,7 @@ if [[ $dry_run == "true" ]]; then
   SLURM_ARGS_GENERIC=$DRY_RUN_SLURM_ARGS
   SLURM_ARGS_TRAIN=$DRY_RUN_SLURM_ARGS
   SLURM_ARGS_TRANSLATE=$DRY_RUN_SLURM_ARGS
+  SLURM_ARGS_EVALUATE=$DRY_RUN_SLURM_ARGS
 fi
 
 # preprocess data
@@ -85,17 +87,15 @@ id_translate=$(
 
 echo "  id_translate: $id_translate | $logs/slurm-$id_translate.out"  | tee -a $logs/MAIN
 
-exit 0
-
 # evaluate (depends on translate)
 
 id_evaluate=$(
     $scripts/sbatch_bare.sh \
-    $SLURM_ARGS_GENERIC \
+    $SLURM_ARGS_EVALUATE \
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/evaluate.sh \
-    $base
+    $base $dry_run
 )
 
 echo "  id_evaluate: $id_evaluate | $logs/slurm-$id_evaluate.out"  | tee -a $logs/MAIN

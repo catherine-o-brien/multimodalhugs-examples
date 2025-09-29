@@ -62,6 +62,12 @@ if [ -z "$model_name_or_path" ]; then
   exit 1
 fi
 
+if [[ -s $translations_sub/generated_predictions.txt ]]; then
+  echo "Translations exist: $translations_sub/generated_predictions.txt"
+  echo "Skipping."
+  exit 0
+fi
+
 multimodalhugs-generate \
     --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
