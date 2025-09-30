@@ -1,57 +1,13 @@
 #! /bin/bash
 
-base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
+# Default values for parameters if not set
 
-dry_run="false"
-
-# Default values for parameters
-
-base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
-dry_run="false"
-model_name="phoenix"
-
-learning_rate="5e-05"
-gradient_accumulation_steps="1"
-warmup_steps="0"
-
-parse_args() {
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      --base)
-        base="$2"
-        shift 2
-        ;;
-      --dry_run)
-        dry_run="$2"
-        shift 2
-        ;;
-      --model_name)
-        model_name="$2"
-        shift 2
-        ;;
-      --help)
-        echo "Usage: $0 [--base STR] [--dry_run BOOL] [--model_name STR]"
-        exit 0
-        ;;
-      --) # end of arguments
-        shift
-        break
-        ;;
-      -*)
-        echo "Unknown option: $1" >&2
-        exit 1
-        ;;
-      *) # positional args
-        POSITIONAL_ARGS+=("$1")
-        shift
-        ;;
-    esac
-  done
-}
-
-POSITIONAL_ARGS=()
-parse_args "$@"
-
+: "${base:="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"}"
+: "${dry_run:="false"}"
+: "${model_name:="phoenix"}"
+: "${learning_rate:="5e-05"}"
+: "${gradient_accumulation_steps:=1}"
+: "${warmup_steps:=0}"
 
 ################################
 
@@ -100,7 +56,7 @@ id_preprocess=$(
     $scripts/sbatch_bare.sh \
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
-    $scripts/phoenix_dataset_preprocessing.sh \
+    $scripts/preprocessing/phoenix_dataset_preprocessing.sh \
     $base $dry_run
 )
 
@@ -117,7 +73,7 @@ id_train=$(
     $SLURM_ARGS_TRAIN \
     --dependency=afterok:$id_preprocess \
     $SLURM_LOG_ARGS \
-    $scripts/train_phoenix.sh \
+    $scripts/training/train_phoenix.sh \
     $base $dry_run $model_name \
     $learning_rate $gradient_accumulation_steps $warmup_steps
 )
@@ -131,7 +87,7 @@ id_translate=$(
     $SLURM_ARGS_TRANSLATE \
     --dependency=afterok:$id_train \
     $SLURM_LOG_ARGS \
-    $scripts/translate_phoenix.sh \
+    $scripts/translation/translate_phoenix.sh \
     $base $dry_run $model_name
 )
 
@@ -144,7 +100,7 @@ id_evaluate=$(
     $SLURM_ARGS_EVALUATE \
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
-    $scripts/evaluate.sh \
+    $scripts/evaluation/evaluate.sh \
     $base $dry_run $model_name
 )
 

@@ -80,7 +80,7 @@ else
     use_cpu_arg=""
 fi
 
-python $scripts/create_config.py \
+python $scripts/training/create_config.py \
     --run-name "phoenix" \
     --config-dir $configs_sub \
     --train-metadata-file $preprocessed/rwth_phoenix2014_t.train.tsv \

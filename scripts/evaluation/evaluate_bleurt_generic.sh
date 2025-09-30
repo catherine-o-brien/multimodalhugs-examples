@@ -18,7 +18,7 @@ for unused in pseudo_loop; do
 
     export XLA_FLAGS=--xla_gpu_cuda_data_dir=$(dirname $(dirname $(which nvcc)))
 
-    python $scripts/evaluate_bleurt.py \
+    python $scripts/evaluation/evaluate_bleurt.py \
         --references $ref \
         --predictions $hyp \
         --checkpoint $bleurt_checkpoint \

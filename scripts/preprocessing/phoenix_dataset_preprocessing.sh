@@ -54,7 +54,7 @@ else
     dry_run_arg=""
 fi
 
-python $scripts/phoenix_dataset_preprocessing.py \
+python $scripts/preprocessing/phoenix_dataset_preprocessing.py \
     --pose-dir $poses \
     --output-dir $preprocessed \
     --tfds-data-dir $data/tensorflow_datasets $dry_run_arg

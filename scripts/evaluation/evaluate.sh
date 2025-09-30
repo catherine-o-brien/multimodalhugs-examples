@@ -54,7 +54,7 @@ ref=$translations_sub/labels.txt
 
 output=$evaluations_sub/test_score.bleu
 
-. $scripts/evaluate_bleu_generic.sh
+. $scripts/evaluation/evaluate_bleu_generic.sh
 
 output=$evaluations_sub/test_score.bleurt
 
@@ -64,4 +64,4 @@ else
     bleurt_checkpoint="BLEURT-20"
 fi
 
-. $scripts/evaluate_bleurt_generic.sh
+. $scripts/evaluation/evaluate_bleurt_generic.sh
