@@ -3,21 +3,23 @@
 # calling script needs to set:
 # $base
 # $dry_run
+# $model_name
 
 base=$1
 dry_run=$2
+model_name=$3
 
 data=$base/data
 scripts=$base/scripts
 venvs=$base/venvs
 configs=$base/configs
-configs_sub=$configs/phoenix
+configs_sub=$configs/$model_name
 
 models=$base/models
-models_sub=$models/phoenix
+models_sub=$models/$model_name
 
 translations=$base/translations
-translations_sub=$translations/phoenix
+translations_sub=$translations/$model_name
 
 mkdir -p $translations
 mkdir -p $translations_sub
@@ -33,9 +35,6 @@ which python
 
 echo "activate path:"
 which activate
-
-# perhaps not necessary anymore
-# eval "$(conda shell.bash hook)"
 
 echo "Executing: source activate $venvs/huggingface"
 

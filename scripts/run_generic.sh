@@ -4,6 +4,55 @@ base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
 
 dry_run="false"
 
+# Default values for parameters
+
+base="/shares/sigma.ebling.cl.uzh/mathmu/multimodalhugs-examples"
+dry_run="false"
+model_name="phoenix"
+
+learning_rate="5e-05"
+gradient_accumulation_steps="1"
+warmup_steps="0"
+
+parse_args() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --base)
+        base="$2"
+        shift 2
+        ;;
+      --dry_run)
+        dry_run="$2"
+        shift 2
+        ;;
+      --model_name)
+        model_name="$2"
+        shift 2
+        ;;
+      --help)
+        echo "Usage: $0 [--base STR] [--dry_run BOOL] [--model_name STR]"
+        exit 0
+        ;;
+      --) # end of arguments
+        shift
+        break
+        ;;
+      -*)
+        echo "Unknown option: $1" >&2
+        exit 1
+        ;;
+      *) # positional args
+        POSITIONAL_ARGS+=("$1")
+        shift
+        ;;
+    esac
+  done
+}
+
+POSITIONAL_ARGS=()
+parse_args "$@"
+
+
 ################################
 
 module load anaconda3
@@ -69,7 +118,8 @@ id_train=$(
     --dependency=afterok:$id_preprocess \
     $SLURM_LOG_ARGS \
     $scripts/train_phoenix.sh \
-    $base $dry_run
+    $base $dry_run $model_name \
+    $learning_rate $gradient_accumulation_steps $warmup_steps
 )
 
 echo "  id_train: $id_train | $logs/slurm-$id_train.out"  | tee -a $logs/MAIN
@@ -82,7 +132,7 @@ id_translate=$(
     --dependency=afterok:$id_train \
     $SLURM_LOG_ARGS \
     $scripts/translate_phoenix.sh \
-    $base $dry_run
+    $base $dry_run $model_name
 )
 
 echo "  id_translate: $id_translate | $logs/slurm-$id_translate.out"  | tee -a $logs/MAIN
@@ -95,7 +145,7 @@ id_evaluate=$(
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
     $scripts/evaluate.sh \
-    $base $dry_run
+    $base $dry_run $model_name
 )
 
 echo "  id_evaluate: $id_evaluate | $logs/slurm-$id_evaluate.out"  | tee -a $logs/MAIN

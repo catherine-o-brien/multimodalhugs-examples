@@ -3,19 +3,27 @@
 # calling script needs to set:
 # $base
 # $dry_run
+# $model_name
+# $learning_rate
+# $gradient_accumulation_steps
+# $warmup_steps
 
 base=$1
 dry_run=$2
+model_name=$3
+learning_rate=$4
+gradient_accumulation_steps=$5
+warmup_steps=$6
 
 data=$base/data
 preprocessed=$data/preprocessed
 scripts=$base/scripts
 venvs=$base/venvs
 configs=$base/configs
-configs_sub=$configs/phoenix
+configs_sub=$configs/$model_name
 
 models=$base/models
-models_sub=$models/phoenix
+models_sub=$models/$model_name
 
 mkdir -p $configs
 mkdir -p $configs_sub
@@ -45,9 +53,6 @@ which python
 
 echo "activate path:"
 which activate
-
-# perhaps not necessary anymore
-# eval "$(conda shell.bash hook)"
 
 echo "Executing: source activate $venvs/huggingface"
 
@@ -82,6 +87,9 @@ python $scripts/create_config.py \
     --validation-metadata-file $preprocessed/rwth_phoenix2014_t.validation.tsv \
     --test-metadata-file $preprocessed/rwth_phoenix2014_t.test.tsv \
     --new-vocabulary "__dgs__" \
+    --learning-rate $learning_rate \
+    --gradient-accumulation-steps $gradient_accumulation_steps \
+    --warmup-steps $warmup_steps \
     --reduce-holistic-poses $dry_run_arg
 
 # https://github.com/GerrySant/multimodalhugs/issues/50

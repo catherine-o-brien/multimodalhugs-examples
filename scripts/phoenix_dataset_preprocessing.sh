@@ -39,9 +39,6 @@ which python
 echo "activate path:"
 which activate
 
-# perhaps not necessary anymore
-# eval "$(conda shell.bash hook)"
-
 echo "Executing: source activate $venvs/huggingface"
 
 source activate $venvs/huggingface

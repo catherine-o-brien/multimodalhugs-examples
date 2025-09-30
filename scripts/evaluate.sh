@@ -3,19 +3,21 @@
 # calling process needs to set:
 # base
 # $dry_run
+# $model_name
 
 base=$1
 dry_run=$2
+model_name=$3
 
 data=$base/data
 scripts=$base/scripts
 venvs=$base/venvs
 
 translations=$base/translations
-translations_sub=$translations/phoenix
+translations_sub=$translations/$model_name
 
 evaluations=$base/evaluations
-evaluations_sub=$evaluations/phoenix
+evaluations_sub=$evaluations/$model_name
 
 mkdir -p $evaluations $evaluations_sub
 
@@ -63,4 +65,3 @@ else
 fi
 
 . $scripts/evaluate_bleurt_generic.sh
-
