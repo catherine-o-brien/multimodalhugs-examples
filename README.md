@@ -8,19 +8,19 @@ Download the code:
 
 Create a venv:
 
-    ./scripts/create_env.sh
+    ./scripts/environment/create_env.sh
 
 Then install required software:
 
-    ./scripts/install.sh
+    ./scripts/environment/install.sh
 
 ## Run experiments
 
 The one change you definitely need to make is edit the 
-variable `base` at the top of `scripts/run.sh.` Then:
+variable `base` at the top of a run script such as `scripts/running/run_basic.sh`. Then to train a basic model:
 
-    ./scripts/run.sh
+    ./scripts/running/run_basic.sh
 
-This will first download and prepare the training data,
-and then train a MultimodalHugs model. All steps are submitted
+This will first download and prepare the PHOENIX training data,
+and then train a basic MultimodalHugs model. All steps are submitted
 as SLURM jobs.
