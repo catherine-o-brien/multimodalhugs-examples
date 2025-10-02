@@ -18,7 +18,7 @@ warmup_steps=$6
 data=$base/data
 preprocessed=$data/preprocessed
 scripts=$base/scripts
-venvs=$base/venvs
+venvs=$base/scripts/venvs
 configs=$base/configs
 configs_sub=$configs/$model_name
 

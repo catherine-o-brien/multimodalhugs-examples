@@ -11,7 +11,7 @@ model_name=$3
 
 data=$base/data
 scripts=$base/scripts
-venvs=$base/venvs
+venvs=$base/scripts/venvs
 configs=$base/configs
 configs_sub=$configs/$model_name
 

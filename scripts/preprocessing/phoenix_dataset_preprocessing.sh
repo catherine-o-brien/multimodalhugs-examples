@@ -9,7 +9,7 @@ dry_run=$2
 
 scripts=$base/scripts
 data=$base/data
-venvs=$base/venvs
+venvs=$scripts/venvs
 
 poses=$data/poses
 preprocessed=$data/preprocessed
