@@ -53,7 +53,7 @@ fi
 # preprocess data
 
 id_preprocess=$(
-    $scripts/sbatch_bare.sh \
+    $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_GENERIC \
     $SLURM_LOG_ARGS \
     $scripts/preprocessing/phoenix_dataset_preprocessing.sh \
@@ -69,7 +69,7 @@ module load gpu cuda/12.6.2 cudnn/9.5.1.17-12
 # HF train (depends on preprocess)
 
 id_train=$(
-    $scripts/sbatch_bare.sh \
+    $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_TRAIN \
     --dependency=afterok:$id_preprocess \
     $SLURM_LOG_ARGS \
@@ -83,7 +83,7 @@ echo "  id_train: $id_train | $logs/slurm-$id_train.out"  | tee -a $logs/MAIN
 # HF translate + evaluate (depends on train)
 
 id_translate=$(
-    $scripts/sbatch_bare.sh \
+    $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_TRANSLATE \
     --dependency=afterok:$id_train \
     $SLURM_LOG_ARGS \
@@ -96,7 +96,7 @@ echo "  id_translate: $id_translate | $logs/slurm-$id_translate.out"  | tee -a $
 # evaluate (depends on translate)
 
 id_evaluate=$(
-    $scripts/sbatch_bare.sh \
+    $scripts/running/sbatch_bare.sh \
     $SLURM_ARGS_EVALUATE \
     --dependency=afterok:$id_translate \
     $SLURM_LOG_ARGS \
