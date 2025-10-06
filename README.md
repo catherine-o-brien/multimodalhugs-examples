@@ -8,7 +8,7 @@ Download the code:
 
 Create a venv:
 
-    ./scripts/environment/create_venv.sh
+    ./scripts/environment/create_env.sh
 
 Then install required software:
 
@@ -17,7 +17,12 @@ Then install required software:
 ## Run experiments
 
 The one change you definitely need to make is edit the 
-variable `base` at the top of a run script such as `scripts/running/run_basic.sh`. Then to train a basic model:
+variable `base` at the top of a run script such as `scripts/running/run_basic.sh`. It is also a good idea
+to use `dry_run="true"` the first time you are running code, which creates all files, executes all
+the code but uses only a fraction of the training data, trains for very few steps only, etc - as a
+general sanity check.
+
+Then to train a basic model:
 
     ./scripts/running/run_basic.sh
 

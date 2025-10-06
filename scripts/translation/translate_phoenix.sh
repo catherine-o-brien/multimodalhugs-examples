@@ -9,8 +9,6 @@ base=$1
 dry_run=$2
 model_name=$3
 
-data=$base/data
-scripts=$base/scripts
 venvs=$base/venvs
 configs=$base/configs
 configs_sub=$configs/$model_name
@@ -67,6 +65,12 @@ if [[ -s $translations_sub/generated_predictions.txt ]]; then
   exit 0
 fi
 
+if [[ $dry_run == "true" ]]; then
+    use_cpu_arg="--use_cpu"
+else
+    use_cpu_arg=""
+fi
+
 multimodalhugs-generate \
     --task "translation" \
     --config_path $configs_sub/config_phoenix.yaml \
@@ -74,4 +78,7 @@ multimodalhugs-generate \
     --output_dir $translations_sub \
     --setup_path $models_sub/setup \
     --model_name_or_path $models_sub/train/checkpoint-best \
-    --num_beams 5
+    --num_beams 5 $use_cpu_arg
+
+echo "time taken:"
+echo "$SECONDS seconds"
