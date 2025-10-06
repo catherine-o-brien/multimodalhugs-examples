@@ -74,4 +74,3 @@ multimodalhugs-generate \
     --output_dir $translations_sub \
     --setup_path $models_sub/setup \
     --model_name_or_path $models_sub/train/checkpoint-best \
-    --num_beams 5
