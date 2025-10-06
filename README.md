@@ -8,7 +8,7 @@ Download the code:
 
 Create a venv:
 
-    ./scripts/environment/create_venv.sh
+    ./scripts/environment/create_env.sh
 
 Then install required software:
 
