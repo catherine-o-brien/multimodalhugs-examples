@@ -29,8 +29,9 @@ training:
   eval_steps: 128                                  # Number of training steps between evaluations.
   logging_steps: 128                               # Interval (in steps) at which training metrics are logged.
   save_steps: 128                                  # Interval (in steps) at which model checkpoints are saved.
-  per_device_train_batch_size: 8                   # Batch size per device during training.
-  per_device_eval_batch_size: 8                    # Batch size per device for evaluation.
+  per_device_train_batch_size: {batch_size}                   # Batch size per device during training.
+  per_device_eval_batch_size: {batch_size}                    # Batch size per device for evaluation.
+  label_smoothing_factor: {label_smoothing_factor}
   gradient_accumulation_steps: {gradient_accumulation_steps}                   # Number of steps to accumulate gradients before weight updates.
   learning_rate: {learning_rate}                   # Initial learning rate for the optimizer.
   load_best_model_at_end: True                     # Load the best model found during training at the end.
@@ -96,6 +97,8 @@ def fill_template(args: argparse.Namespace) -> str:
         learning_rate=args.learning_rate,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         warmup_steps=args.warmup_steps,
+        batch_size=args.batch_size,
+        label_smoothing_factor=args.label_smoothing_factor
     )
 
 # Parse command-line arguments
@@ -129,6 +132,12 @@ def parse_arguments():
                         default=1, required=False)
     parser.add_argument("--warmup-steps", type=int, help="Number of steps used for a linear warmup from 0 to learning_rate. ",
                         default=0, required=False)
+    parser.add_argument("--batch-size", type=int,
+                        help="The batch size per GPU/XPU/TPU/MPS/NPU core/CPU for training / evaluation.",
+                        default=8, required=False)
+    parser.add_argument("--label-smoothing-factor", type=float,
+                        help="The label smoothing factor to use. Zero means no label smoothing.",
+                        default=0.0, required=False)
 
     parser.add_argument("--dry-run", action="store_true", default=False,
                         help="Train for a small number of steps.", required=False)

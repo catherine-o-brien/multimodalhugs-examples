@@ -1,5 +1,6 @@
 from evaluate import load
 import numpy as np
+import logging
 
 def parse_arguments():
     import argparse
@@ -11,6 +12,9 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
+
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug(args)
 
     bleurt = load("bleurt", module_type="metric", config_name=args.checkpoint)
 

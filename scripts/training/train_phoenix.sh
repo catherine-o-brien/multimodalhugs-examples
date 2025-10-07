@@ -7,6 +7,8 @@
 # $learning_rate
 # $gradient_accumulation_steps
 # $warmup_steps
+# $batch_size
+# $label_smoothing_factor
 
 base=$1
 dry_run=$2
@@ -14,6 +16,8 @@ model_name=$3
 learning_rate=$4
 gradient_accumulation_steps=$5
 warmup_steps=$6
+batch_size=$7
+label_smoothing_factor=$8
 
 data=$base/data
 preprocessed=$data/preprocessed
@@ -75,6 +79,7 @@ which python
 if [[ $dry_run == "true" ]]; then
     dry_run_arg="--dry-run"
     use_cpu_arg="--use_cpu"
+    batch_size="1"
 else
     dry_run_arg=""
     use_cpu_arg=""
@@ -90,6 +95,8 @@ python $scripts/training/create_config.py \
     --learning-rate $learning_rate \
     --gradient-accumulation-steps $gradient_accumulation_steps \
     --warmup-steps $warmup_steps \
+    --batch-size $batch_size \
+    --label-smoothing-factor $label_smoothing_factor \
     --reduce-holistic-poses $dry_run_arg
 
 # https://github.com/GerrySant/multimodalhugs/issues/50
