@@ -8,9 +8,6 @@ base=$scripts/..
 venvs=$base/venvs
 tools=$base/tools
 
-# perhaps not necessary anymore
-# export TMPDIR="/var/tmp"
-
 mkdir -p $tools
 
 source activate $venvs/huggingface
@@ -18,6 +15,11 @@ source activate $venvs/huggingface
 # install multimodalhugs
 
 git clone https://github.com/GerrySant/multimodalhugs.git $tools/multimodalhugs
+
+# pin commit  https://github.com/GerrySant/multimodalhugs/commit/88968685e48db472a9474e7690546059c2977560
+# to avoid unintentionally breaking the code
+
+(cd $tools/multimodalhugs && git checkout "88968685e48db472a9474e7690546059c2977560")
 
 (cd $tools/multimodalhugs && pip install .)
 
