@@ -59,7 +59,7 @@ output=$evaluations_sub/test_score.bleu
 output=$evaluations_sub/test_score.bleurt
 
 if [[ $dry_run == "true" ]]; then
-    bleurt_checkpoint="BLEURT-tiny"
+    bleurt_checkpoint="bleurt-tiny-128"
 else
     bleurt_checkpoint="BLEURT-20"
 fi

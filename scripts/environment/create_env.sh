@@ -2,7 +2,8 @@
 
 module load gpu cuda/12.6.2 cudnn/9.5.1.17-12 anaconda3
 
-scripts=$(dirname "$0")
+environment_scripts=$(dirname "$0")
+scripts=$environment_scripts/..
 base=$scripts/..
 
 venvs=$base/venvs

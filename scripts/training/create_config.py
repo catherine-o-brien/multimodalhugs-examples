@@ -14,9 +14,9 @@ model:
   multimodal_mapper_type: "linear"                # Type of Multimodal Mapper (e.g., "linear" or "adapter").
   multimodal_mapper_layer_norm_before: true       # Whether to apply Layer Normalization before the Multimodal Mapper.
   multimodal_mapper_dropout: 0.1                  # Dropout probability for the Multimodal Mapper to prevent overfitting.
-  backbone_type: {backbone_type}                  # Identifier for the pretrained backbone (e.g., "m2m100").
+  backbone_type: {backbone_type}                  # Identifier for the pretrained backbone (e.g., "m2m_100").
   pretrained_backbone: {pretrained_backbone}      # Weights or checkpoint identifier for the pretrained backbone.
-  feat_dim: 534                                   # Dimention of the Feature Extractor output. If features are extracted off-line, the dimentionality of features.
+  feat_dim: 534                                   # Dimension of the Feature Extractor output. If features are extracted off-line, the dimentionality of features.
 
 training:
   run_name: {run_name}                             # The name or identifier of the model configuration.
@@ -29,8 +29,9 @@ training:
   eval_steps: 128                                  # Number of training steps between evaluations.
   logging_steps: 128                               # Interval (in steps) at which training metrics are logged.
   save_steps: 128                                  # Interval (in steps) at which model checkpoints are saved.
-  per_device_train_batch_size: 8                   # Batch size per device during training.
-  per_device_eval_batch_size: 8                    # Batch size per device for evaluation.
+  per_device_train_batch_size: {batch_size}                   # Batch size per device during training.
+  per_device_eval_batch_size: {batch_size}                    # Batch size per device for evaluation.
+  label_smoothing_factor: {label_smoothing_factor}
   gradient_accumulation_steps: {gradient_accumulation_steps}                   # Number of steps to accumulate gradients before weight updates.
   learning_rate: {learning_rate}                   # Initial learning rate for the optimizer.
   load_best_model_at_end: True                     # Load the best model found during training at the end.
@@ -39,17 +40,11 @@ training:
   metric_name: sacrebleu, chrf                     # Name of the metric to use (any metric supported by evaluate.load()). If you want to use multiple metrics, structure the variable like: metric_name: '<metric_name_1>,<metric_name_2>,...'
   metric_for_best_model: 'sacrebleu'               # Metric used to determine the best model.
   greater_is_better: true
-  weight_decay: 0                                  # Weight decay factor (L2 regularization).
-  adam_beta1: 0.9                                  # Beta1 parameter for the Adam optimizer.
-  adam_beta2: 0.998                                # Beta2 parameter for the Adam optimizer.
-  max_grad_norm: 0.0                               # Maximum gradient norm for clipping (0 means no clipping).
   num_train_epochs: 1                              # Number of full passes through the training dataset.
   max_steps: {max_steps}                           # Maximum number of training steps, e.g. 500000 (overrides num_train_epochs if set).
-  lr_scheduler_type: "inverse_sqrt"                # Type of learning rate scheduler.
   warmup_steps: {warmup_steps}                     # Number of warmup steps to gradually increase the learning rate.
   save_total_limit: 10                             # Maximum number of checkpoints to retain (older ones are deleted).
   seed: 3435                                       # Random seed for reproducibility.
-  dataloader_drop_last: false                      # Drop the last incomplete batch in the dataloader.
   fp16: True                                       # Enable mixed-precision (FP16) training for faster computation.
   # See the list of allowed arguments in https://huggingface.co/docs/transformers/v4.49.0/en/main_classes/trainer#transformers.Seq2SeqTrainingArguments
 
@@ -102,6 +97,8 @@ def fill_template(args: argparse.Namespace) -> str:
         learning_rate=args.learning_rate,
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         warmup_steps=args.warmup_steps,
+        batch_size=args.batch_size,
+        label_smoothing_factor=args.label_smoothing_factor
     )
 
 # Parse command-line arguments
@@ -135,6 +132,12 @@ def parse_arguments():
                         default=1, required=False)
     parser.add_argument("--warmup-steps", type=int, help="Number of steps used for a linear warmup from 0 to learning_rate. ",
                         default=0, required=False)
+    parser.add_argument("--batch-size", type=int,
+                        help="The batch size per GPU/XPU/TPU/MPS/NPU core/CPU for training / evaluation.",
+                        default=8, required=False)
+    parser.add_argument("--label-smoothing-factor", type=float,
+                        help="The label smoothing factor to use. Zero means no label smoothing.",
+                        default=0.0, required=False)
 
     parser.add_argument("--dry-run", action="store_true", default=False,
                         help="Train for a small number of steps.", required=False)
