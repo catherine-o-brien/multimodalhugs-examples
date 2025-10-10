@@ -33,6 +33,8 @@ This will first download and prepare the PHOENIX training data,
 and then train a basic MultimodalHugs model. All steps are submitted
 as SLURM jobs.
 
+If the process is fully reproducible, this should result in a test set BLEU score of `10.691`.
+
 ### Hyperparams exploration
 
 The following script will train approximately 50 models to search for good hyperparameters
