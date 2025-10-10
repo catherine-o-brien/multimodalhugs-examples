@@ -3,6 +3,7 @@
 Download the code:
 
     git clone https://github.com/bricksdont/multimodalhugs-examples
+    cd multimodalhugs-examples
 
 ## Basic setup
 
@@ -15,6 +16,8 @@ Then install required software:
     ./scripts/environment/install.sh
 
 ## Run experiments
+
+### Single experiment
 
 The one change you definitely need to make is edit the 
 variable `base` at the top of a run script such as `scripts/running/run_basic.sh`. It is also a good idea
@@ -29,3 +32,10 @@ Then to train a basic model:
 This will first download and prepare the PHOENIX training data,
 and then train a basic MultimodalHugs model. All steps are submitted
 as SLURM jobs.
+
+### Hyperparams exploration
+
+The following script will train approximately 50 models to search for good hyperparameters
+(each run will finish in roughly 2 hours):
+
+    ./scripts/running/run_basic.sh
